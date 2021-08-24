@@ -1,11 +1,23 @@
 using UnityEngine;
 
-public class CharacterControllerMover : MonoBehaviour
+public class CharacterControllerMover : BaseMonoBehaviour
 {
+    public HumanoidStateData StateData
+    {
+        get
+        {
+            return stateData;
+        }
+        set
+        {
+            stateData = value;
+        }
+    }
+
     public CharacterController Controller;
-    public HumanoidStateData stateData;
     public Vector3Variable MoveDirection;
-    [SerializeField] public Vector2Variable moveInput;
+    public Vector2Variable MoveInput;
+    [SerializeField] private HumanoidStateData stateData;
     [SerializeField] private Vector3Variable moveVelocity;
 
     private void Awake()
@@ -19,7 +31,10 @@ public class CharacterControllerMover : MonoBehaviour
     private void LateUpdate()
     {
         Controller.Move(MoveDirection.Value * Time.deltaTime);
-        stateData.IsGrounded = Controller.isGrounded;
-        moveVelocity.Value = transform.InverseTransformVector(MoveDirection.Value);
+        StateData.IsGrounded = Controller.isGrounded;
+        if(moveVelocity != null && MoveDirection != null)
+        {
+            moveVelocity.Value = transform.InverseTransformVector(MoveDirection.Value);
+        }
     }
 }

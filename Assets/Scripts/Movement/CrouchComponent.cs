@@ -1,8 +1,23 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class CrouchComponent : MonoBehaviour
+public class CrouchComponent : BaseMonoBehaviour
 {
+    public UnityEvent CrouchToggleResponse;
+
+    public HumanoidStateData StateData
+    {
+        get
+        {
+            return stateData;
+        }
+        set
+        {
+            stateData = value;
+        }
+    }
+
     [SerializeField] private float timeToCrouch = 0.1f;
     [SerializeField] private HumanoidStateData stateData;
     [SerializeField] private Transform characterHead;
@@ -27,21 +42,13 @@ public class CrouchComponent : MonoBehaviour
         stateData.IsCrouching = false;
     }
 
-    private void Update()
-    {
-        if (stateData.ShouldCrouch &&
-            characterControllerMover.Controller.isGrounded &&
-            !duringCrouchAnimation
-            )
-        {
-            StartCoroutine(CrouchStandRoutine());
-            stateData.ShouldCrouch = false;
-        }
-    }
-
     public void Crouch()
     {
-        stateData.ShouldCrouch = true;
+        if(characterControllerMover.Controller.isGrounded &&
+            !duringCrouchAnimation)
+        {
+            StartCoroutine(CrouchStandRoutine());
+        }
     }
 
     private IEnumerator CrouchStandRoutine()
@@ -63,6 +70,8 @@ public class CrouchComponent : MonoBehaviour
         Vector3 currentHeadPos = stateData.IsCrouching ? crouchHeadPos : standHeadPos;
 
         stateData.IsCrouching = !stateData.IsCrouching;
+
+        CrouchToggleResponse.Invoke();
 
         while (timeElapsed < timeToCrouch)
         {

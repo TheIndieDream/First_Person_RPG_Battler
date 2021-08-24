@@ -1,10 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveComponent : MonoBehaviour
+public class MoveComponent : BaseMonoBehaviour
 {
-    [SerializeField] private HumanoidStateData humanoidStateData;
+    public HumanoidStateData StateData
+    {
+        get
+        {
+            return stateData;
+        }
+        set
+        {
+            stateData = value;
+        }
+    }
+
+    [SerializeField] private HumanoidStateData stateData;
     [SerializeField] private Vector3Variable moveDirection;
     [SerializeField] private CharacterControllerMover characterControllerMover;
     [SerializeField] private float crouchWalkSpeed;
@@ -28,15 +38,15 @@ public class MoveComponent : MonoBehaviour
     private void Update()
     {
         moveSpeed = walkSpeed;
-        if (humanoidStateData.IsRunning)
+        if (stateData.IsRunning)
         {
             moveSpeed = runSpeed;
         }
-        if (humanoidStateData.IsSprinting)
+        if (stateData.IsSprinting)
         {
             moveSpeed = sprintSpeed;
         }
-        if (humanoidStateData.IsCrouching)
+        if (stateData.IsCrouching)
         {
             moveSpeed = crouchWalkSpeed;
         }
@@ -44,7 +54,7 @@ public class MoveComponent : MonoBehaviour
         float moveDirectionY = moveDirection.Value.y;
 
         Vector3 proposedMoveDirection;
-        if (!isGamepadInput || humanoidStateData.IsSprinting)
+        if (!isGamepadInput || stateData.IsSprinting)
         {
             proposedMoveDirection = ((transform.forward * moveInput.y) +
             (transform.right * moveInput.x)).normalized * moveSpeed;
@@ -53,7 +63,7 @@ public class MoveComponent : MonoBehaviour
         {
             proposedMoveDirection = ((transform.forward * moveInput.y) +
             (transform.right * moveInput.x)) * 
-            (humanoidStateData.IsCrouching ? crouchWalkSpeed:runSpeed) ;
+            (stateData.IsCrouching ? crouchWalkSpeed:runSpeed) ;
         }
 
         moveDirection.Value = Vector3.SmoothDamp(moveDirection.Value,

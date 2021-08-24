@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "new Vector3Variable", 
-    menuName = "Variable.../Vector3 Variable")]
+[CreateAssetMenu(fileName = "new Vector3 Variable", 
+    menuName = "Variables.../Vector3")]
 public class Vector3Variable : ScriptableObject
 {
     public Vector3 Value;

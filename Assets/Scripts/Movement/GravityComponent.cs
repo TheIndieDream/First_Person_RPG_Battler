@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityComponent : MonoBehaviour
+public class GravityComponent : BaseMonoBehaviour
 {
     [SerializeField] private Vector3Variable moveDirection;
     [SerializeField] private CharacterControllerMover characterControllerMover;

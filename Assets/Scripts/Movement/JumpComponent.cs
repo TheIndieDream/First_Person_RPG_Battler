@@ -1,13 +1,28 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-public class JumpComponent : MonoBehaviour
+public class JumpComponent : BaseMonoBehaviour
 {
-    [SerializeField] private HumanoidStateData stateData;
+    public UnityEvent JumpResponse;
+
+    public HumanoidStateData StateData
+    {
+        get
+        {
+            return stateData;
+        }
+        set
+        {
+            stateData = value;
+        }
+    }
+
     [SerializeField] private Vector3Variable moveDirection;
     [SerializeField] private CharacterControllerMover characterControllerMover;
     [SerializeField] private float jumpForce = 8.0f;
+    [SerializeField] private HumanoidStateData stateData;
 
-    private bool returnToCrouch = false;
+    //private bool returnToCrouch = false;
 
     private void Start()
     {
@@ -22,27 +37,15 @@ public class JumpComponent : MonoBehaviour
         if (characterControllerMover.Controller.isGrounded)
         {
             moveDirection.Value.y = -0.5f;
-            if (stateData.ShouldJump)
-            {
-                moveDirection.Value.y = jumpForce;
-                if (returnToCrouch)
-                {
-                    stateData.ShouldCrouch = true;
-                    returnToCrouch = false;
-                }
-                
-            }
         }
-        stateData.ShouldJump = false;
     }
 
     public void Jump()
     {
-        if (stateData.IsCrouching)
+        if (characterControllerMover.Controller.isGrounded)
         {
-            stateData.ShouldCrouch = true;
-            returnToCrouch = true;
+            JumpResponse.Invoke();
+            moveDirection.Value.y = jumpForce;
         }
-        stateData.ShouldJump = true;
     }
 }

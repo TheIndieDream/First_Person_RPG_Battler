@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseMonoBehaviour
 {
     [Header("Gamepad Parameters")]
     [SerializeField] private float gamepadLookSensitivity;
@@ -10,11 +10,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerCameraCommandStream playerCameraCommandStream;
     [SerializeField] private HumanoidCommandStream playerCommandStream;
 
+    private AttackCommand attackCommand = new AttackCommand();
     private CrouchCommand crouchCommand = new CrouchCommand();
+
+    private ToggleWeaponDrawCommand toggleWeaponDrawCommand = 
+        new ToggleWeaponDrawCommand();
+
     private JumpCommand jumpCommand = new JumpCommand();
     private LookCommand lookCommand = new LookCommand();
     private MoveCommand moveCommand = new MoveCommand();
     private ToggleRunCommand toggleRunCommand = new ToggleRunCommand();
+
     private ToggleSprintCommand toggleSprintCommand = 
         new ToggleSprintCommand();
 
@@ -23,11 +29,27 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            playerCommandStream.Enqueue(attackCommand);
+        }
+    }
+
     public void OnCrouch(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             playerCommandStream.Enqueue(crouchCommand);
+        }
+    }
+
+    public void OnWeaponDrawToggle(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            playerCommandStream.Enqueue(toggleWeaponDrawCommand);
         }
     }
 

@@ -81,6 +81,22 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""DrawSheathWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""0892677f-ee34-47d5-b8ff-8fdb7b297ea4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""4dda67ca-d2c5-4ce1-a5e3-3a1b068e2183"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -292,6 +308,50 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""GamepadMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f9f2c86-c750-462d-9763-7aa8aba0a148"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrawSheathWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d15dde3d-1df4-4437-9131-f99f9cd09b66"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrawSheathWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62d9a0ea-792f-4a77-a972-d672b3485c86"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b5c87c5-3b7a-4152-aba8-25c9de4c1e43"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -308,6 +368,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_ToggleRun = m_Gameplay.FindAction("ToggleRun", throwIfNotFound: true);
         m_Gameplay_ToggleSprint = m_Gameplay.FindAction("ToggleSprint", throwIfNotFound: true);
         m_Gameplay_Crouch = m_Gameplay.FindAction("Crouch", throwIfNotFound: true);
+        m_Gameplay_DrawSheathWeapon = m_Gameplay.FindAction("DrawSheathWeapon", throwIfNotFound: true);
+        m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -365,6 +427,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_ToggleRun;
     private readonly InputAction m_Gameplay_ToggleSprint;
     private readonly InputAction m_Gameplay_Crouch;
+    private readonly InputAction m_Gameplay_DrawSheathWeapon;
+    private readonly InputAction m_Gameplay_Attack;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -377,6 +441,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @ToggleRun => m_Wrapper.m_Gameplay_ToggleRun;
         public InputAction @ToggleSprint => m_Wrapper.m_Gameplay_ToggleSprint;
         public InputAction @Crouch => m_Wrapper.m_Gameplay_Crouch;
+        public InputAction @DrawSheathWeapon => m_Wrapper.m_Gameplay_DrawSheathWeapon;
+        public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -410,6 +476,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Crouch.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCrouch;
+                @DrawSheathWeapon.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrawSheathWeapon;
+                @DrawSheathWeapon.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrawSheathWeapon;
+                @DrawSheathWeapon.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrawSheathWeapon;
+                @Attack.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -438,6 +510,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
+                @DrawSheathWeapon.started += instance.OnDrawSheathWeapon;
+                @DrawSheathWeapon.performed += instance.OnDrawSheathWeapon;
+                @DrawSheathWeapon.canceled += instance.OnDrawSheathWeapon;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
         }
     }
@@ -452,5 +530,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnToggleRun(InputAction.CallbackContext context);
         void OnToggleSprint(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
+        void OnDrawSheathWeapon(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
